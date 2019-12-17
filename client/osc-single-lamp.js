@@ -8,18 +8,20 @@ Skriv denne kommando i terminalen:
 node bridge.js
 */
 var lys = 0;
-var color = 0;
+
 // Bridge ip-adresse. Find den fx i hue app'en
 var url = '192.168.0.102';
 // Fælles brugernavn
 var username = 'hdycYCstsRmeDMkO2PKuVI9y0cypqVcvgHf0QEQq';
 //Slidere
 var dimmer;
-var color;
+var farve;
 //Den pære du vil kontrollere
 var lightNumber = 17;
 //Den osc besked du vil modtage
 var osc_address = "/wek/outputs";
+
+var farve;
 
 function setup() {
     createCanvas(500, 500);
@@ -35,12 +37,12 @@ function setup() {
     dimmer.position(10, 10); // position it
     dimmer.mouseReleased(changeBrightness); // mouseReleased callback function
 
-    color = createSlider(0, 65535, 250) // a slider to dim one light
-    color.position(10, 40); // position it
-    color.mouseReleased(changeColor); // mouseReleased callback function
+    farve = createSlider(0, 65535, 250) // a slider to dim one light
+    farve.position(10, 40); // position it
+    farve.mouseReleased(changefarve); // mouseReleased callback function
 
     text("Lysstyrke", dimmer.x * 2 + dimmer.width, 14);
-    text("Color", color.x * 2 + color.width, 44);
+    text("farve", farve.x * 2 + farve.width, 44);
     textSize(144);
     text(lightNumber, 300, 100);
     connect(); // connect to Hue hub; it will show all light states
@@ -73,15 +75,19 @@ function changeBrightness() {
     setLight(lightNumber, lightState);
 }
 
-function changeColor() {
-    var color = this.value(); // get the value of this slider
+function changefarve() {
     var lightState = { // make a JSON object with it
-        hue: color,
+        hue: farve,
         sat: 254,
         on: true,
     }
     // make the HTTP call with the JSON object:
     setLight(lightNumber, lightState);
+}
+
+function SkiftFarve() {
+        farve = (osc_address*63000)
+
 }
 
 function oscChangeBrightness(lys){
@@ -94,13 +100,12 @@ function oscChangeBrightness(lys){
     setLight(lightNumber, lightState);    
 }
 
-function oscChangeColor(color){
+function oscChangeFarve(farve){
     var lightState = { // make a JSON object with it
-        hue: color,
+        hue: farve,
         sat:254,
         on: true,
     }
-    color.value(color);
     // make the HTTP call with the JSON object:
     setLight(lightNumber, lightState);    
 }
@@ -129,16 +134,15 @@ Nedenstående er OSC funktioner.
 
 function receiveOsc(address, value) {
     if (address == osc_address) {
-        lys = value[0];
-        color = value[1];
+        farve = value[0];
     }
-    lys = parseInt(map(lys, 0, 500, 1, 254));
-    color = parseInt(map(color, 0, 500, 153, 500));
-    oscDiv.html("OSC Lys: " + lys + " color: " + color + "<hr/>");
+  //  lys = parseInt(map(lys, 0, 500, 1, 254));
+    farve = parseInt(map(farve, 0, 1, 0, 65000));
+    //oscDiv.html("OSC Lys: " + lys + " farve: " + farve + "<hr/>");
     
     if(frameCount%30==0){
-        oscChangeBrightness(lys);
-        oscChangeColor(color);
+        //oscChangeBrightness(lys);
+        oscChangeFarve(farve);
     }
     //console.log("Received osc : " + address + " " + value);
 }
