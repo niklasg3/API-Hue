@@ -15,13 +15,12 @@ var url = '192.168.0.102';
 var username = 'hdycYCstsRmeDMkO2PKuVI9y0cypqVcvgHf0QEQq';
 //Slidere
 var dimmer;
-var farve;
+var farve = (osc_address*63000)
 //Den pære du vil kontrollere
 var lightNumber = 17;
 //Den osc besked du vil modtage
 var osc_address = "/wek/outputs";
 
-var farve;
 
 function setup() {
     createCanvas(500, 500);
@@ -84,12 +83,12 @@ function changefarve() {
     // make the HTTP call with the JSON object:
     setLight(lightNumber, lightState);
 }
-
+/*
 function SkiftFarve() {
         farve = (osc_address*63000)
 
 }
-
+*/
 function oscChangeBrightness(lys){
     var lightState = { // make a JSON object with it
         bri: lys,
